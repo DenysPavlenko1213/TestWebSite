@@ -1,0 +1,27 @@
+{
+  "name": "moj-projekt",
+  "version": "1.0.0",
+  "description": "simple web site\r ## Installation\r git clone https://github.com/DenysPavlenko1213/Test.git",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DenysPavlenko1213/TestWebSite.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DenysPavlenko1213/TestWebSite/issues"
+  },
+  "homepage": "https://github.com/DenysPavlenko1213/TestWebSite#readme",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.10"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
