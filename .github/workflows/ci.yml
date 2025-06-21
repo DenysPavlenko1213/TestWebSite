@@ -31,6 +31,5 @@ jobs:
         run: |
           docker run -d -p 3000:3000 --name test-container ${{ github.repository }}:${{ github.sha }} 
           sleep 10 
-          curl -f http://localhost:3000 || 
-          exit 1 
+          curl -f http://localhost:3000 || exit 1 
           docker stop test-container
