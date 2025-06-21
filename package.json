@@ -4,7 +4,8 @@
   "description": "simple web site\r ## Installation\r git clone https://github.com/DenysPavlenko1213/Test.git",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "echo \"creating build\" "
   },
   "repository": {
     "type": "git",
