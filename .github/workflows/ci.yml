@@ -33,7 +33,7 @@ jobs:
         run: |
           docker run -d -p 8080:8080 --name test-container ${{ github.repository }}:${{ github.sha }} 
           sleep 10 
-          curl -f http://localhost:80 || exit 1 
+          curl -f http://localhost:8080 || exit 1 
           docker stop test-container
 
   deploy:
