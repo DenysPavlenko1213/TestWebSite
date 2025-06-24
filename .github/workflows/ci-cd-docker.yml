@@ -3,8 +3,6 @@ name: CI/CD with Docker
 on:
   push:
     branches: [master]
-  pull_request:
-    branches: [master]
 
 jobs:
   test:
@@ -35,17 +33,3 @@ jobs:
           sleep 10 
           curl -f http://localhost:3000 || exit 1 
           docker stop test-container
-
-    build-and-deploy:
-      needs: docker
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v3
-
-        - name: Deploy to Azure Web App
-          uses: azure/webapps-deploy@v2
-          with:
-            app-name: test-website
-            publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-            package: .

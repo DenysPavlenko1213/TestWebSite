@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/DenysPavlenko1213/TestWebSite#readme",
   "devDependencies": {
+    "eslint": "^9.29.0",
     "jest": "^29.7.0",
     "nodemon": "^3.1.10"
   },
