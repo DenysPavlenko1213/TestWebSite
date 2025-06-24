@@ -36,16 +36,35 @@ jobs:
           curl -f http://localhost:80 || exit 1 
           docker stop test-container
 
-  build-and-deploy:
-    needs: docker
-    runs-on: ubuntu-latest
-    steps:
-        - name: Checkout code
-          uses: actions/checkout@v3
-
-        - name: Deploy to Azure Web App
-          uses: azure/webapps-deploy@v2
-          with:
-            app-name: test-website
-            publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-            package: .
+  deploy: 
+    runs-on: ubuntu-latest 
+    needs: docker 
+    environment: 
+      name: 'Production' 
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }} 
+    permissions: 
+      id-token: write 
+      contents: read 
+ 
+    steps: 
+      - name: Download artifact from build job 
+        uses: actions/download-artifact@v4 
+        with: 
+          name: python-app 
+ 
+      - name: Unzip artifact for deployment 
+        run: unzip release.zip 
+       
+      - name: Login to Azure 
+        uses: azure/login@v2 
+        with: 
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID }} 
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID }} 
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }} 
+ 
+      - name: 'Deploy to Azure Web App' 
+        uses: azure/webapps-deploy@v3 
+        id: deploy-to-webapp 
+        with: 
+          app-name: 'test-website' 
+          slot-name: 'Production'
