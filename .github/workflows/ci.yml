@@ -50,9 +50,10 @@ jobs:
       - name: Build image
         run: docker build . -t myapp
 
-      - name: Deploy to Azure Web App
+      - name: Deploy Node.js code
         uses: azure/webapps-deploy@v2
         with:
           app-name: test-website
-          images: myapp
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: .
 
