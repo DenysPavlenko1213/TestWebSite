@@ -36,10 +36,10 @@ jobs:
           curl -f http://localhost:3000 || exit 1 
           docker stop test-container
 
-    build-and-deploy:
-      needs: docker
-      runs-on: ubuntu-latest
-      steps:
+  build-and-deploy:
+    needs: docker
+    runs-on: ubuntu-latest
+    steps:
         - name: Checkout code
           uses: actions/checkout@v3
 
