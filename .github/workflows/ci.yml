@@ -74,7 +74,5 @@ jobs:
           script: | 
             docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main-${{ github.sha }} 
             docker stop myapp || true 
-            docker rm myapp || true 
-            docker run -d --name myapp -p 80:80 \ 
-              -e NODE_ENV=production \ 
-              ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main-${{ github.sha }} 
+            docker rm myapp || true
+            docker run -d --name myapp -p 80:80 -e NODE_ENV=production ghcr.io/denyspavlenko1213/test-web-site:latest
