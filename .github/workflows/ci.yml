@@ -77,4 +77,4 @@ jobs:
             docker pull ghcr.io/denyspavlenko1213/test-web-site:latest
             docker stop myapp || true 
             docker rm myapp || true
-            docker run -d --name myapp -p 80:80 -e NODE_ENV=production ghcr.io/denyspavlenko1213/test-web-site:latest
+            docker run -d --name myapp -p 8080:80 -e NODE_ENV=production ghcr.io/denyspavlenko1213/test-web-site:latest
