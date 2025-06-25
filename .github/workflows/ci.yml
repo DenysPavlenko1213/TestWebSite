@@ -5,8 +5,9 @@ on:
     branches: [ master ] 
  
 env: 
-  REGISTRY: ghcr.io 
-  IMAGE_NAME: ${{ github.repository | toLower }} 
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository | toLower }}
+
  
 jobs: 
   test:
