@@ -1,5 +1,5 @@
 # My Project
-### Description
+## Description
 simple web site
-### Installation
+## Installation
 git clone https://github.com/DenysPavlenko1213/Test.git

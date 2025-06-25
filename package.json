@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start": "http-server ./ -p 8080"
+    "build": "mkdir -p dist && cp -r *.html *.css *.js dist/ || true"
   },
   "repository": {
     "type": "git",
@@ -24,7 +24,6 @@
     "nodemon": "^3.1.10"
   },
   "dependencies": {
-    "express": "^5.1.0",
-    "http-server": "^14.1.1"
+    "express": "^5.1.0"
   }
 }

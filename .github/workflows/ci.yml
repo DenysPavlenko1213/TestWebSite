@@ -1,54 +1,79 @@
-name: CI/CD with Docker
-
-on:
-  push:
-    branches: [master]
-  pull_request:
-    branches: [master]
-
-jobs:
+name: Docker Build and Deploy 
+ 
+on: 
+  push: 
+    branches: [ master ] 
+ 
+env: 
+  REGISTRY: ghcr.io 
+  IMAGE_NAME: ${{ github.repository }} 
+ 
+jobs: 
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
-      - name: Install and test
-        run: |
-          npm install 
-          npm test
+          node-version: 18
 
-  docker:
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm run test
+  build-and-push: 
     needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Build Docker image
-        run: docker build -t ${{ github.repository }}:${{ github.sha }} .
-
-      - name: Test Docker image
-        run: |
-          docker run -d -p 8080:8080 --name test-container ${{ github.repository }}:${{ github.sha }} 
-          sleep 10 
-          curl -f http://localhost:8080 || exit 1 
-          docker stop test-container
-
-  deploy:
-    needs: docker
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Build image
-        run: docker build . -t myapp
-
-      - name: Deploy Node.js code
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: test-website
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: .
-
+    runs-on: ubuntu-latest 
+    permissions: 
+      contents: read 
+      packages: write 
+ 
+    steps: 
+      - name: Checkout repository 
+        uses: actions/checkout@v4 
+ 
+      - name: Log in to Container Registry 
+        uses: docker/login-action@v3 
+        with: 
+          registry: ${{ env.REGISTRY }} 
+          username: ${{ github.actor }} 
+          password: ${{ secrets.GITHUB_TOKEN }} 
+ 
+      - name: Extract metadata 
+        id: meta 
+        uses: docker/metadata-action@v5 
+        with: 
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} 
+          tags: | 
+            type=ref,event=branch 
+            type=sha,prefix={{branch}}- 
+ 
+      - name: Build and push Docker image 
+        uses: docker/build-push-action@v5 
+        with: 
+          context: . 
+          push: true 
+          tags: ${{ steps.meta.outputs.tags }} 
+          labels: ${{ steps.meta.outputs.labels }} 
+ 
+  deploy: 
+    needs: build-and-push 
+    runs-on: ubuntu-latest 
+ 
+    steps: 
+      - name: Deploy to production server 
+        uses: appleboy/ssh-action@v1.0.0 
+        with: 
+          host: ${{ secrets.REMOTE_HOST }} 
+          username: ${{ secrets.REMOTE_USER }} 
+          key: ${{ secrets.SSH_PRIVATE_KEY }} 
+          script: | 
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main-${{ github.sha }} 
+            docker stop myapp || true 
+            docker rm myapp || true 
+            docker run -d --name myapp -p 80:80 \ 
+              -e NODE_ENV=production \ 
+              ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main-${{ github.sha }} 
